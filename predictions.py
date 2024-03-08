@@ -78,37 +78,16 @@ def parser(text, label):
     """
     if label == 'PHONE':
         text = text.lower()
-        pattern = re.compile(r"""
-            # Possíveis códigos de país e delimitadores
-            (\+55|\b0?\b)?         # Código do país (opcional, incluindo o + ou 0)
-            (?:\()?                # Parênteses de abertura (opcional)
-            
-            # DDD (código de área)
-            (\d{2})                 # Dois dígitos para o DDD
-            
-            # Parênteses de fechamento ou outro separador
-            (?(2)\)|[^\d\w])?       # Parênteses de fechamento (opcional) ou qualquer caracter que não seja dígito ou palavra
-            
-            # Números principais
-            (\d{4,5})               # Quatro ou cinco dígitos para a parte principal
-            
-            # Outro separador
-            [^\d\w]?                # Qualquer caracter que não seja dígito ou palavra
-            
-            # Últimos dígitos
-            (\d{4})                 # Quatro dígitos para os últimos
-        """, re.VERBOSE)
+        pattern = re.compile('/((\(?0\d{4}\)?\s?\d{3}\s?\d{3})|(\(?0\d{3}\)?\s?\d{3}\s?\d{4})|(\(?0\d{2}\)?\s?\d{4}\s?\d{4}))(\s?\#(\d{4}|\d{3}))?/;', re.VERBOSE)
         text = pattern.sub(format_phone, text)
         
     elif label == 'EMAIL':
         text = text.lower()
-        allow_special_char = '@_.\-'
-        text = re.sub(r'[^A-Za-z0-9{} ]'.format(allow_special_char),'',text)
+        text = re.sub('/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;','',text)
         
     elif label == 'WEB':
         text = text.lower()
-        allow_special_char = ':/.%#\-'
-        text = re.sub(r'[^A-Za-z0-9{} ]'.format(allow_special_char),'',text)
+        text = re.sub('/[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]{0,1}\.([a-zA-Z]{1,6}|[a-zA-Z0-9-]{1,30}\.[a-zA-Z]{2,3})/;','',text)
         
     elif label in ('NAME', 'DES'):
         text = text.lower()
