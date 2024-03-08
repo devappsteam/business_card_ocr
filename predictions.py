@@ -11,9 +11,11 @@ import re
 import string
 import warnings
 warnings.filterwarnings('ignore')
+import pt_core_news_lg
 
 ### Carrega o modelo NER
-model_ner = spacy.load('./output/model-best/')
+model_ner = spacy.load('./output/model-best/') # Modelo treinado
+#model_ner = spacy.load('pt_core_news_lg') # modelo generico em PT
 
 def cleanText(txt):
     """
@@ -145,7 +147,14 @@ def getPredictions(image):
     # converter dados em conteúdo
     df_clean = df.query('text != "" ')
     content = " ".join([w for w in df_clean['text']])
+    
+    print("///////////////////////////////")
+    print("//// COUTEUDO EXTRAIDO    /////")
+    print("///////////////////////////////")
+    print('\n')
     print(content)
+    print('\n\n\n')
+    
     # obter previsão do modelo NER
     doc = model_ner(content)
 
